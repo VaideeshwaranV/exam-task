@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Random users</title>
+  <style>
+    /* Add some basic styling */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      text-align: center;
+    }
+    #users-container {
+      display: flex;
+      justify-content: center;
+    }
+    .user-card {
+      width: 300px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random Users</h1>
+  <div id="users-container"></div>
+
+  <script>
+    // Function to fetch user details from Random User API
+    function fetchUserDetails() {
+      fetch('https://randomuser.me/api/')
+        .then(response => response.json())
+        .then(data => {
+          const user = data.results[0];
+          const fullName = `${user.name.first} ${user.name.last}`;
+          const email = user.email;
+          const username = user.login.username;
+          const picture = user.picture.large;
+
+          // Create user card HTML element
+          const userCard = document.createElement('div');
+          userCard.className = 'user-card';
+          userCard.innerHTML = `
+            <img src="${picture}" alt="User Picture" />
+            <p><strong>Name:</strong> ${fullName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Username:</strong> ${username}</p>
+          `;
+
+          // Add the user card to the container
+          const usersContainer = document.getElementById('users-container');
+          usersContainer.appendChild(userCard);
+        })
+        .catch(error => console.log(error));
+    }
+
+    // Function to refresh user details every 30 seconds
+    function refreshUserDetails() {
+      // Clear the previous user cards
+      const usersContainer = document.getElementById('users-container');
+      usersContainer.innerHTML = '';
+
+      // Fetch new user details
+      fetchUserDetails();
+
+      // Refresh every 30 seconds
+      setTimeout(refreshUserDetails, 30000);
+    }
+
+    // Initial fetch and refresh
+    fetchUserDetails();
+    refreshUserDetails();
+  </script>
+</body>
+</html>
